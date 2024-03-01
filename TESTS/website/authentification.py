@@ -1,3 +1,5 @@
 from flask import Blueprint 
 
-authentification = Blueprint ('views' , __name__)
+authentification = Blueprint ('authentification' , __name__)
+
+ 
