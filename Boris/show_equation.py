@@ -1,30 +1,31 @@
-import os
+from flask import Flask, render_template
 import random
 
-def generate_equation():
+app = Flask(__name__)
+
+def generate_integral_question():
     # Generate random coefficients
-    a = random.randint(-10, 10)
-    b = random.randint(-10, 10)
-    c = random.randint(-10, 10)
+    a = random.randint(-5, 5)
+    b = random.randint(-5, 5)
 
-    # Generate LaTeX code for the equation
-    equation = f"y = {a}x^2 + {b}x + {c}"
+    # Generate LaTeX code for the question
+    question = f"$\int ({a}x^2 + {b}x) \,dx$"
 
-    # Write LaTeX code to a file
-    with open("equation.tex", "w") as f:
-        f.write("\\documentclass{article}\n")
-        f.write("\\usepackage{amsmath}\n")
-        f.write("\\begin{document}\n")
-        f.write("\\section*{Random Mathematical Equation}\n")
-        f.write(f"Here is a randomly generated mathematical equation:\n")
-        f.write(f"\\[ {equation} \\]\n")
-        f.write("\\end{document}\n")
+    # Generate LaTeX code for virtual keyboard
+    keyboard = """
+    \\begin{array}{cccccc}
+    \\int & \\frac{d}{dx} & \\sum & \\prod & \\lim & \\infty \\\\
+    \\end{array}
+    """
 
-    # Compile LaTeX to PDF
-    os.system("pdflatex equation.tex")
+    return question, keyboard
 
-    # Open the PDF file
-    os.system("start equation.pdf")
+@app.route('/')
+def display_integral_question():
+    # Generate integral question and virtual keyboard
+    question, keyboard = generate_integral_question()
 
-if __name__ == "__main__":
-    generate_equation()
+    return render_template('index.html', question=question, keyboard=keyboard)
+
+if __name__ == '__main__':
+    app.run(debug=True)
